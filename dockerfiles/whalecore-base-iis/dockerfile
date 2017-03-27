@@ -5,9 +5,7 @@ FROM cloud.canister.io:5000/schwindelig/whalecore-base-windows-server:latest
 
 RUN powershell -Command Add-WindowsFeature Web-Server
 
-RUN MKDIR C:\Whalecore\Bin
-
-ADD ServiceMonitor.exe C:\Wahlecore\Bin\ServiceMonitor.exe
+COPY /Whalecore C:\Whalecore
 
 EXPOSE 80
 
