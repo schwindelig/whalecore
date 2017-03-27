@@ -1,0 +1,14 @@
+# This dockerfile is based on Microsoft's implementation
+# See https://github.com/Microsoft/iis-docker
+
+FROM schwindelig/base-windows-server:latest
+
+RUN powershell -Command Add-WindowsFeature Web-Server
+
+RUN MKDIR C:\Whalecore\Bin
+
+ADD ServiceMonitor.exe C:\Wahlecore\Bin\ServiceMonitor.exe
+
+EXPOSE 80
+
+ENTRYPOINT ["C:\Wahlecore\Bin\ServiceMonitor.exe", "w3svc"]
