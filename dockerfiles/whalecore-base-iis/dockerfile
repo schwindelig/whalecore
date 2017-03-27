@@ -1,7 +1,7 @@
 # This dockerfile is based on Microsoft's implementation
 # See https://github.com/Microsoft/iis-docker
 
-FROM schwindelig/whalecore-base-windows-server:latest
+FROM cloud.canister.io:5000/schwindelig/whalecore-base-windows-server:latest
 
 RUN powershell -Command Add-WindowsFeature Web-Server
 
