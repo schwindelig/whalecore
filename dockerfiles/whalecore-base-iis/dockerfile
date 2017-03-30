@@ -3,9 +3,13 @@
 
 FROM whalecore.azurecr.io/whalecore-base-windows-server:latest
 
-RUN powershell -Command Add-WindowsFeature Web-Server
+# Switch to powershell
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 
 COPY /Whalecore C:\Whalecore
+
+# Run DSC
+RUN C:\Wahlecore\Scripts\DSC-Whalecore-Base-IIS.ps1
 
 EXPOSE 80
 
