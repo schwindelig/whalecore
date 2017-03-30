@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop" 
+
 function Write-WhalecoreLog
 {
     param(
