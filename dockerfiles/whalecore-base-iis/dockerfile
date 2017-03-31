@@ -6,11 +6,12 @@ FROM whalecore.azurecr.io/whalecore-base-windows-server:latest
 # Switch to powershell
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
 
+# Copy context
 COPY /Whalecore C:\Whalecore
 
 # Run DSC
-RUN C:\Wahlecore\Scripts\DSC-Whalecore-Base-IIS.ps1
+RUN C:\Whalecore\Scripts\DSC-Whalecore-Base-IIS.ps1
 
 EXPOSE 80
 
-ENTRYPOINT ["C:\Wahlecore\Bin\ServiceMonitor.exe", "w3svc"]
+ENTRYPOINT ["C:\\Whalecore\\Bin\\ServiceMonitor.exe", "w3svc"]
