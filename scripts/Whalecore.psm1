@@ -40,6 +40,11 @@ function New-LocalAdmin
     }
 }
 
+function Get-CurrentSemVer
+{
+    return (gitversion | ConvertFrom-Json).SemVer
+}
+
 function Write-WhalecoreLog
 {
     param(
