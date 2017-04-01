@@ -1,4 +1,4 @@
-Import-Module (Resolve-Path('Whalecore.psm1'))
+Import-Module (Resolve-Path('../scripts/Whalecore.psm1'))
 
 function Invoke-WhalecoreBuild
 {
