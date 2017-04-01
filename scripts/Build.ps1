@@ -1,14 +1,6 @@
 Import-Module (Resolve-Path('Whalecore.psm1'))
 
-function BuildTagPush($fullTag, $dockerfilePath)
-{
-    Write-WhalecoreLog "Build & tag $fullTag ..."
-    docker build --pull -t $fullTag $dockerfilePath
-    Write-WhalecoreLog "Pushing $fullTag ..."
-    docker push $fullTag
-}
-
-function InitBuild
+function Invoke-WhalecoreBuild
 {
     $registryAddress = "whalecore.azurecr.io"
     $dockerfilesPath = "..\dockerfiles"
@@ -17,13 +9,29 @@ function InitBuild
     $baseWindowsServerRepoName = "whalecore-base-windows-server"
     $baseWindowsServerTag = "latest"
     $baseWindowsServerFullTag = "$registryAddress/${baseWindowsServerRepoName}:${baseWindowsServerTag}"
-    BuildTagPush $baseWindowsServerFullTag (Join-Path $dockerfilesPath $baseWindowsServerRepoName)
+    Invoke-BuildTagPush $baseWindowsServerFullTag (Join-Path $dockerfilesPath $baseWindowsServerRepoName)
 
     # Build & tag base IIS image
     $baseIisRepoName = "whalecore-base-iis"
     $baseIisTag = "latest"
     $baseIisFullTag = "$registryAddress/${baseIisRepoName}:${baseIisTag}"
-    BuildTagPush $baseIisFullTag (Join-Path $dockerfilesPath $baseIisRepoName)
+    Invoke-BuildTagPush $baseIisFullTag (Join-Path $dockerfilesPath $baseIisRepoName)
 }
 
-InitBuild
+function Invoke-BuildTagPush
+{
+    param(
+        # Parameter help description
+        [Parameter(Mandatory=$true)]
+        [string]$fullTag,
+        [Parameter(Mandatory=$true)]
+        [string]$dockerfilePath
+    )
+
+    Write-WhalecoreLog "Build & tag $fullTag ..."
+    docker build --pull -t $fullTag $dockerfilePath
+    Write-WhalecoreLog "Pushing $fullTag ..."
+    docker push $fullTag
+}
+
+Invoke-WhalecoreBuild
