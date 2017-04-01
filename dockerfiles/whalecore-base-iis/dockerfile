@@ -14,4 +14,4 @@ RUN C:\Whalecore\Scripts\DSC-Whalecore-Base-IIS.ps1
 
 EXPOSE 80
 
-ENTRYPOINT ["C:\\Whalecore\\Bin\\ServiceMonitor.exe", "w3svc"]
+ENTRYPOINT ["C:\\Whalecore\\Scripts\\Entrypoint-Whalecore-Base-IIS.ps1"]
