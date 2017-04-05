@@ -25,7 +25,7 @@ function New-LocalAdmin
     }
     else{
         Write-WhalecoreLog "Local user $username was not found. Creating local user."
-        New-LocalUser -Name $username -password $password
+        New-LocalUser -Name $username -password $password | Out-Null
     }
 
     $adminGroupName = "Administrators"

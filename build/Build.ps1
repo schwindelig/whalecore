@@ -2,13 +2,23 @@ param(
     [switch]$pushImages = $false
 )
 
-Import-Module (Resolve-Path('../scripts/Whalecore.psm1'))
-
+$ErrorActionPreference = "Stop"
+$whalecoreModulePath = "..\scripts\Whalecore.psm1"
 $registryAddress = "whalecore.azurecr.io"
 $dockerfilesPath = "..\dockerfiles"
 
+Import-Module (Resolve-Path($whalecoreModulePath))
+
 function Invoke-WhalecoreBuild {
-    Invoke-BuildTagPush "whalecore-base-windows-server"
+    # Base Windows Server
+    ## Copy Whalecore Module to build context
+    $baseWindowsServerImageName = "whalecore-base-windows-server"
+    $whalecoreModuleDestinationPath = "$dockerfilesPath\$baseWindowsServerImageName\Whalecore\Scripts\Whalecore.psm1"
+    New-Item $whalecoreModuleDestinationPath -Force | Out-Null
+    Copy-Item $whalecoreModulePath $whalecoreModuleDestinationPath
+    Invoke-BuildTagPush $baseWindowsServerImageName
+
+    # Base IIS
     Invoke-BuildTagPush "whalecore-base-iis"
 }
 
