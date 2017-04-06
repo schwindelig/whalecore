@@ -45,6 +45,22 @@ function Get-CurrentSemVer
     return (gitversion | ConvertFrom-Json).SemVer
 }
 
+function Read-ValueOrFallback
+{
+    param(
+        $value,
+        [Parameter(Mandatory = $true)]
+        $fallback
+    )
+
+    if($value -eq $null)
+    {
+        return $fallback
+    }
+
+    return $value
+}
+
 function Write-WhalecoreLog
 {
     param(
