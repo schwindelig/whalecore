@@ -7,7 +7,13 @@ Configuration DSC-Whalecore-Base-IIS
         WindowsFeature IIS
         {
             Ensure = "Present"
+            Name = "Web-Server"
+        }
+        WindowsFeature WebMgmtService
+        {
+            Ensure = "Present"
             Name = "Web-Mgmt-Service"
+            DependsOn = "[WindowsFeature]IIS"
         }
         # WindowsFeature HTTPWCF
         # {
