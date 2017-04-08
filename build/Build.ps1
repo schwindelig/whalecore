@@ -23,6 +23,9 @@ function Invoke-WhalecoreBuild {
 
     # Base IIS
     Invoke-BuildTagPush "whalecore-base-iis"
+
+    # Base MSSQL
+    Invoke-BuildTagPush "whalecore-base-mssql"
 }
 
 function Invoke-BuildTagPush {
