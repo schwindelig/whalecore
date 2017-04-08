@@ -1,22 +1,30 @@
-Import-Module (Resolve-Path('../scripts/Whalecore.psm1'))
+param(
+    [switch]$pushImages = $false
+)
 
+$ErrorActionPreference = "Stop"
+$whalecoreModulePath = "..\scripts\Whalecore.psm1"
 $registryAddress = "whalecore.azurecr.io"
 $dockerfilesPath = "..\dockerfiles"
 
-function Invoke-WhalecoreBuild
-{
-    # Build & tag base Windows Server image
-    Invoke-BuildTagPush "whalecore-base-windows-server"
+Import-Module (Resolve-Path($whalecoreModulePath))
 
-    # Build & tag base IIS image
+function Invoke-WhalecoreBuild {
+    # Base Windows Server
+    ## Copy Whalecore Module to build context
+    $baseWindowsServerImageName = "whalecore-base-windows-server"
+    $whalecoreModuleDestinationPath = "$dockerfilesPath\$baseWindowsServerImageName\Whalecore\Scripts\Whalecore.psm1"
+    New-Item $whalecoreModuleDestinationPath -Force | Out-Null
+    Copy-Item $whalecoreModulePath $whalecoreModuleDestinationPath
+    Invoke-BuildTagPush $baseWindowsServerImageName
+
+    # Base IIS
     Invoke-BuildTagPush "whalecore-base-iis"
 }
 
-function Invoke-BuildTagPush
-{
+function Invoke-BuildTagPush {
     param(
-        # Parameter help description
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$imageName
     )
 
@@ -27,8 +35,13 @@ function Invoke-BuildTagPush
     Write-WhalecoreLog "Build & tag $path ($tag)"
     docker build --pull -t $tag $path
 
-    Write-WhalecoreLog "Pushing $tag"
-    docker push $tag
+    if ($pushImages -eq $true) {
+        Write-WhalecoreLog "Pushing $tag"
+        docker push $tag
+    }
+    else{
+        Write-WhalecoreLog "Not pushing image. Use -pushImages switch to push images to registry."
+    }
 }
 
 Invoke-WhalecoreBuild

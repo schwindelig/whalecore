@@ -25,7 +25,7 @@ function New-LocalAdmin
     }
     else{
         Write-WhalecoreLog "Local user $username was not found. Creating local user."
-        New-LocalUser -Name $username -password $password
+        New-LocalUser -Name $username -password $password | Out-Null
     }
 
     $adminGroupName = "Administrators"
@@ -43,6 +43,22 @@ function New-LocalAdmin
 function Get-CurrentSemVer
 {
     return (gitversion | ConvertFrom-Json).SemVer
+}
+
+function Read-ValueOrFallback
+{
+    param(
+        $value,
+        [Parameter(Mandatory = $true)]
+        $fallback
+    )
+
+    if($value -eq $null)
+    {
+        return $fallback
+    }
+
+    return $value
 }
 
 function Write-WhalecoreLog
