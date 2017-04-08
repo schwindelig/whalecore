@@ -1,1 +1,4 @@
 FROM microsoft/windowsservercore
+
+# Copy and install whalecore module
+COPY ./Whalecore C:\Whalecore
