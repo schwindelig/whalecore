@@ -1,11 +1,14 @@
 param(
-    [switch]$pushImages = $false
+    [string]$buildMode = "local"
 )
 
 $ErrorActionPreference = "Stop"
 $whalecoreModulePath = "..\scripts\Whalecore.psm1"
 $registryAddress = "whalecore.azurecr.io"
 $dockerfilesPath = "..\dockerfiles"
+$buildModeLocal = "local"
+$buildModeNighty = "nightly"
+$buildModeRelease = "release"
 
 Import-Module (Resolve-Path($whalecoreModulePath))
 
@@ -28,20 +31,50 @@ function Invoke-BuildTagPush {
         [string]$imageName
     )
 
+    Write-WhalecoreLog "Building $imageName"
+
+    $tags = Get-BuildTags -imageName $imageName -version (Get-CurrentSemVer)
+    $buildArguments = Get-BuildArguments -imageName $imageName -tags $tags
+
+    Invoke-Expression "docker $buildArguments" -ErrorAction "Stop"
+
+    # TODO for other buildModes: add --no-cache, --pull, etc
+    # TODO for other buildModes: push every tag
+    # --> docker push $tag
+}
+
+function Get-BuildTags
+{
+    [OutputType([String[]])]
+    param(
+        [string]$imageName,
+        [string]$version
+    )
+
+    $result = New-Object System.Collections.Generic.List[System.String]
+    $base = "${registryAddress}/${imageName}"
+    $result.Add("${base}:${version}")
+
+    if($buildMode -like $buildModeLocal)
+    {
+        $result.Add("${base}:latest")
+    }
+
+    return $result.ToArray()
+}
+
+function Get-BuildArguments
+{
+    param(
+        [string]$imageName,
+        [string[]]$tags
+    )
+
     $path = (Join-Path $dockerfilesPath $imageName)
-    $version = Get-CurrentSemVer
-    $tag = "${registryAddress}/${imageName}:${version}"
+    $tagsArgs = $tags | ForEach-Object { "-t $_" }
+    $pullArgs = $null #if($buildMode -like $buildModeLocal){ "--pull" }
 
-    Write-WhalecoreLog "Build & tag $path ($tag)"
-    docker build --pull -t $tag $path
-
-    if ($pushImages -eq $true) {
-        Write-WhalecoreLog "Pushing $tag"
-        docker push $tag
-    }
-    else{
-        Write-WhalecoreLog "Not pushing image. Use -pushImages switch to push images to registry."
-    }
+    return "build $pullArgs $tagsArgs $path"
 }
 
 Invoke-WhalecoreBuild
