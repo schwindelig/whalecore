@@ -26,6 +26,9 @@ function Invoke-WhalecoreBuild {
 
     # Base MSSQL
     Invoke-BuildTagPush "whalecore-base-mssql"
+
+    # Sitecore MSSQL
+    Invoke-BuildTagPush "whalecore-sc-mssql"
 }
 
 function Invoke-BuildTagPush {

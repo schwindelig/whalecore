@@ -10,6 +10,18 @@ function New-SecureString
     return ConvertTo-SecureString $message -AsPlainText -Force
 }
 
+function New-Credentials
+{
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$username,
+        [Parameter(Mandatory = $true)]
+        [SecureString]$password
+    )
+
+    return New-Object System.Management.Automation.PSCredential ($username, $password)
+}
+
 function New-LocalAdmin
 {
     Param(

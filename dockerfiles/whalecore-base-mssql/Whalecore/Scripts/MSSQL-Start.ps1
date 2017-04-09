@@ -27,6 +27,7 @@ if($ACCEPT_EULA -ne "Y" -And $ACCEPT_EULA -ne "y"){
 Write-Verbose "Starting SQL Server"
 start-service MSSQLSERVER
 
+Write-Verbose "Checking credentials"
 if($sa_password -ne "_"){
 	Write-Verbose "Changing SA login credentials"
     $sqlcmd = "ALTER LOGIN sa with password=" +"'" + $sa_password + "'" + ";ALTER LOGIN sa ENABLE;"
@@ -37,6 +38,7 @@ $attach_dbs_cleaned = $attach_dbs.TrimStart('\\').TrimEnd('\\')
 
 $dbs = $attach_dbs_cleaned | ConvertFrom-Json
 
+Write-Verbose "Attaching databases"
 if ($null -ne $dbs -And $dbs.Length -gt 0){
 	Write-Verbose "Attaching $($dbs.Length) database(s)"
 	Foreach($db in $dbs)
@@ -56,10 +58,3 @@ if ($null -ne $dbs -And $dbs.Length -gt 0){
 }
 
 Write-Verbose "Started SQL Server."
-
-$lastCheck = (Get-Date).AddSeconds(-2) 
-while ($true) { 
-    Get-EventLog -LogName Application -Source "MSSQL*" -After $lastCheck | Select-Object TimeGenerated, EntryType, Message	 
-    $lastCheck = Get-Date 
-    Start-Sleep -Seconds 2 
-}

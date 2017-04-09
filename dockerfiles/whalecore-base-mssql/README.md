@@ -4,17 +4,33 @@ Base Images for all containers running Microsoft SQL Server.
 
 ## Environment Variables
 
-### whalecore_local_admin_create
+For more information, check the original README: <https://github.com/Microsoft/mssql-docker/tree/master/windows/mssql-server-windows-express>
 
-`true` or `false` - Defines if a local admin should be created. This is required if you want to use remote iis management.
-Default: `false`
+### sa_password
 
-### whalecore_local_admin_username
+Sets the password of the sa account and enabled the login. It has a minimum complexity requirement (8 characters, uppercase, lowercase, alphanumerical and/or non-alphanumerical).
 
-Name of the local windows account used as admin if `whalecore_local_admin_create` is enabled
-Default: `whalecore_admin`
+### accept_eula
 
-### whalecore_local_admin_password
+Set this to `Y` otherwise nothing will work.
 
-Password of the local windows account used as admin if `whalecore_local_admin_create` is enabled
-Default: `-#w@l3s&B4c0n!-`
+### attach_dbs
+
+The configuration for attaching custom DBs (.mdf, .ldf files).
+
+This should be a JSON string, in the following format (note the use of SINGLE quotes!)
+
+```JSON
+[
+    {
+        'dbName': 'MaxDb',
+        'dbFiles': ['C:\\temp\\maxtest.mdf',
+        'C:\\temp\\maxtest_log.ldf']
+    },
+    {
+        'dbName': 'PerryDb',
+        'dbFiles': ['C:\\temp\\perrytest.mdf',
+        'C:\\temp\\perrytest_log.ldf']
+    }
+]
+```

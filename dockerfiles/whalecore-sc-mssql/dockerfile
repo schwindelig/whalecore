@@ -1,0 +1,21 @@
+FROM whalecore.azurecr.io/whalecore-base-mssql:latest
+
+# Set default values for environment variables
+ENV whalecore_db_user_username whalecore_sql_user
+ENV whalecore_db_user_password -#w@l3s&B4c0n!-
+ENV whalecore_db_name_analytics Sitecore.Analytics
+ENV whalecore_db_name_core Sitecore.Core
+ENV whalecore_db_name_master Sitecore.Master
+ENV whalecore_db_name_sessions Sitecore.Sessions
+ENV whalecore_db_name_web Sitecore.Web
+ENV whalecore_db_host_analytics false
+ENV whalecore_db_host_core false
+ENV whalecore_db_host_master false
+ENV whalecore_db_host_sessions false
+ENV whalecore_db_host_web false
+
+# Copy context
+COPY /Whalecore C:\\Whalecore
+
+# Entrypoint
+ENTRYPOINT ["powershell", "C:\\Whalecore\\Scripts\\Entrypoint-Whalecore-SC-MSSQL.ps1"]
