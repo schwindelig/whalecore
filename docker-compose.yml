@@ -1,0 +1,44 @@
+version: "3.0"
+services:
+    sitecore_db: 
+        image: whalecore.azurecr.io/whalecore-sc-mssql:latest
+        ports:
+            - "1433:1433"
+        volumes:
+            - ./sitecore/databases/8.2-rev-161221:C:\Sitecore\Databases
+        environment:
+            - "sa_password=p@55w0rd!"
+            - "ACCEPT_EULA=Y"
+            - "attach_dbs=[
+                {'dbName':'sitecore_analytics',
+                    'dbFiles':[ 'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Analytics.mdf',
+                                'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Analytics.ldf']},
+                {'dbName':'sitecore_core',
+                    'dbFiles':[ 'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Core.mdf',
+                                'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Core.ldf']},
+                {'dbName':'sitecore_master',
+                    'dbFiles':[ 'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Master.mdf',
+                                'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Master.ldf']},
+                {'dbName':'sitecore_sessions',
+                    'dbFiles':[ 'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Sessions.mdf',
+                                'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Sessions.ldf']},
+                {'dbName':'sitecore_web',
+                    'dbFiles':[ 'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Web.mdf',
+                                'C:\\\\Sitecore\\\\Databases\\\\Sitecore.Web.ldf']}
+                ]"
+            - "whalecore_db_user_username=whalecore_sql_user"
+            - "whalecore_db_user_password=wh@l3c0r3P@55w0rd!"
+            - "whalecore_db_name_analytics=sitecore_analytics"
+            - "whalecore_db_name_core=sitecore_core"
+            - "whalecore_db_name_master=sitecore_master"
+            - "whalecore_db_name_sessions=sitecore_sessions"
+            - "whalecore_db_name_web=sitecore_web"
+            - "whalecore_db_host_analytics=true"
+            - "whalecore_db_host_core=true"
+            - "whalecore_db_host_master=true"
+            - "whalecore_db_host_sessions=true"
+            - "whalecore_db_host_web=true"
+networks:
+  default:
+    external:
+      name: nat

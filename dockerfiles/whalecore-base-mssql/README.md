@@ -12,7 +12,7 @@ Sets the password of the sa account and enabled the login. It has a minimum comp
 
 ### accept_eula
 
-Set this to `y` otherwise nothing will run.
+Set this to `Y` otherwise nothing will work.
 
 ### attach_dbs
 
