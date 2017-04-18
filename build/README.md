@@ -10,6 +10,8 @@ Contains scripts for building the Whalecore images. Run ./Build.ps1 for a comple
 
 ### Sitecore Version
 
+For sitecore images, the version will be used for tagging. This replaces the `latest` tag.
+
 `8.2-rev-161221` - Sitecore 8.2 Update 2
 
 ## Build.ps1
