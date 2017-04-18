@@ -27,20 +27,21 @@ function Invoke-WhalecoreBuild {
     # Base MSSQL
     Invoke-BuildTagPush "whalecore-base-mssql"
 
-    # Sitecore MSSQL
-    Invoke-BuildTagPush "whalecore-sc-mssql"
+    # Sitecore MSSQL (8.2-rev-161221)
+    Invoke-BuildTagPush -imageName "whalecore-sc-mssql" -sitecoreVersionLabel "8.2-rev-161221"
 }
 
 function Invoke-BuildTagPush {
     param(
         [Parameter(Mandatory = $true)]
-        [string]$imageName
+        [string]$imageName,
+        [string]$sitecoreVersionLabel
     )
 
     Write-WhalecoreLog "Building $imageName"
 
-    $tags = Get-BuildTags -imageName $imageName -version (Get-CurrentSemVer)
-    $buildArguments = Get-BuildArguments -imageName $imageName -tags $tags
+    $tags = Get-BuildTags -imageName $imageName -version (Get-CurrentSemVer) -additionalTag $sitecoreVersionLabel
+    $buildArguments = Get-BuildArguments -imageName $imageName -tags $tags -sitecoreVersionLabel $sitecoreVersionLabel
 
     Invoke-Expression "docker $buildArguments" -ErrorAction "Stop"
 
@@ -54,7 +55,8 @@ function Get-BuildTags
     [OutputType([String[]])]
     param(
         [string]$imageName,
-        [string]$version
+        [string]$version,
+        [string]$additionalTag
     )
 
     $result = New-Object System.Collections.Generic.List[System.String]
@@ -66,6 +68,11 @@ function Get-BuildTags
         $result.Add("${base}:latest")
     }
 
+    if($additionalTag)
+    {
+        $result.Add("${base}:${additionalTag}")
+    }
+
     return $result.ToArray()
 }
 
@@ -73,10 +80,13 @@ function Get-BuildArguments
 {
     param(
         [string]$imageName,
-        [string[]]$tags
+        [string[]]$tags,
+        [string]$sitecoreVersionLabel
     )
 
-    $path = (Join-Path $dockerfilesPath $imageName)
+    $path = Join-Path $dockerfilesPath $imageName
+    $path = (Join-Path $path $sitecoreVersionLabel)
+    Write-WhalecoreLog "Path is $path"
     $tagsArgs = $tags | ForEach-Object { "-t $_" }
     $pullArgs = $null #if($buildMode -like $buildModeLocal){ "--pull" }
 

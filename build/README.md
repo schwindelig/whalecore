@@ -6,7 +6,11 @@ Contains scripts for building the Whalecore images. Run ./Build.ps1 for a comple
 
 ### latest
 
-`latest` is used for the latest stable release (eg. master branch). `latest` is also applied for local images during development when running with buildMode `local`.
+`latest` is used for the latest stable release (eg. master branch) of non-sitecore images. `latest` is also applied for local images during development when running with buildMode `local`.
+
+### Sitecore Version
+
+`8.2-rev-161221` - Sitecore 8.2 Update 2
 
 ## Build.ps1
 
