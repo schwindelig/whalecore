@@ -40,7 +40,7 @@ function Invoke-BuildTagPush {
 
     Write-WhalecoreLog "Building $imageName"
 
-    $tags = Get-BuildTags -imageName $imageName -version (Get-CurrentSemVer) -additionalTag $sitecoreVersionLabel
+    $tags = Get-BuildTags -imageName $imageName -version (Get-CurrentSemVer) -sitecoreVersionLabel $sitecoreVersionLabel
     $buildArguments = Get-BuildArguments -imageName $imageName -tags $tags -sitecoreVersionLabel $sitecoreVersionLabel
 
     Invoke-Expression "docker $buildArguments" -ErrorAction "Stop"
@@ -56,21 +56,21 @@ function Get-BuildTags
     param(
         [string]$imageName,
         [string]$version,
-        [string]$additionalTag
+        [string]$sitecoreVersionLabel
     )
 
     $result = New-Object System.Collections.Generic.List[System.String]
     $base = "${registryAddress}/${imageName}"
     $result.Add("${base}:${version}")
 
-    if($buildMode -like $buildModeLocal)
+    if($buildMode -like $buildModeLocal -and !$sitecoreVersionLabel)
     {
         $result.Add("${base}:latest")
     }
 
-    if($additionalTag)
+    if($sitecoreVersionLabel)
     {
-        $result.Add("${base}:${additionalTag}")
+        $result.Add("${base}:${sitecoreVersionLabel}")
     }
 
     return $result.ToArray()
